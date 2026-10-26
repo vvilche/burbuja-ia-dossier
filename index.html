@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Big Short de la IA? — 2008 vs. el ciclo de crédito de la IA</title>
+<style>
+  :root {
+    --accent: #2563eb;
+    --accent-soft: #eaf1ff;
+    --ink: #0f172a;
+    --muted: #475569;
+    --line: #e2e8f0;
+    --bg: #f7f9fc;
+    --card: #ffffff;
+    --warn: #b91c1c;
+    --warn-soft: #fef2f2;
+    --ok: #047857;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px 80px; }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .inner {
+    max-width: 1080px; margin: 0 auto; padding: 10px 22px;
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  }
+  nav a {
+    color: var(--muted); text-decoration: none; font-size: 13.5px;
+    padding: 5px 11px; border-radius: 999px; white-space: nowrap;
+  }
+  nav a:hover { background: var(--accent-soft); color: var(--accent); }
+
+  /* ---------- header ---------- */
+  header { padding: 46px 0 26px; }
+  .kicker {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+    background: var(--accent-soft); padding: 4px 12px; border-radius: 999px; margin-bottom: 14px;
+  }
+  h1 { font-size: clamp(28px, 4.5vw, 42px); line-height: 1.15; margin: 0 0 12px; font-weight: 800; letter-spacing: -0.02em; }
+  .subtitle { font-size: 18px; color: var(--muted); max-width: 760px; margin: 0 0 8px; }
+  .meta { font-size: 13px; color: #94a3b8; }
+
+  .verdict {
+    margin-top: 22px; padding: 18px 20px; border-radius: 14px;
+    background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+  }
+  .verdict b { color: var(--accent); }
+  .verdict .tag { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+
+  /* ---------- kpis ---------- */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 10px 0 34px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .kpi .num { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
+  .kpi .num small { font-size: 15px; font-weight: 700; color: var(--muted); }
+  .kpi .lbl { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .kpi.warn { border-left: 4px solid var(--warn); background: var(--warn-soft); }
+
+  /* ---------- sections ---------- */
+  section { margin: 40px 0; }
+  h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .lede { color: var(--muted); max-width: 820px; margin: 0 0 18px; font-size: 15.5px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px 24px; margin: 14px 0;
+  }
+  .card h3 { margin: 0 0 10px; font-size: 17px; font-weight: 700; }
+  .card p { margin: 0 0 10px; }
+  .card p:last-child { margin-bottom: 0; }
+
+  .dato { margin: 0 0 10px; padding-left: 20px; position: relative; font-size: 15px; }
+  .dato::before { content: "↳"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .dato a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+  .dato a:hover { border-bottom-color: var(--accent); }
+
+  /* ---------- svg chart block ---------- */
+  .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .chart { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  .chart h3 { margin: 0 0 6px; font-size: 14px; font-weight: 700; color: var(--muted); }
+  .chart .cap { font-size: 12.5px; color: #94a3b8; margin-top: 6px; }
+
+  /* ---------- comparison table ---------- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 640px; }
+  th, td { text-align: left; padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: none; }
+  thead th { background: #f1f5f9; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  th.dim { width: 24%; }
+  td.c08 { background: var(--warn-soft); }
+  td.ia { background: var(--accent-soft); }
+  td .era { font-weight: 800; font-size: 12px; display: block; margin-bottom: 4px; }
+  td.c08 .era { color: var(--warn); }
+  td.ia .era { color: var(--accent); }
+
+  /* ---------- voices ---------- */
+  .voice { display: flex; gap: 16px; align-items: flex-start; }
+  .avatar {
+    flex: 0 0 44px; height: 44px; border-radius: 12px; background: var(--accent-soft);
+    color: var(--accent); font-weight: 800; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .voice .who { font-weight: 800; font-size: 15.5px; }
+  .voice .role { font-size: 12.5px; color: var(--muted); display: block; margin-bottom: 6px; }
+
+  .pro { border-left: 4px solid var(--ok); }
+  .con { border-left: 4px solid var(--warn); }
+
+  /* ---------- sources ---------- */
+  .src { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; align-items: baseline; }
+  .src:last-child { border-bottom: none; }
+  .src .n { flex: 0 0 26px; color: #94a3b8; font-variant-numeric: tabular-nums; }
+  .src a { color: var(--accent); text-decoration: none; }
+  .src a:hover { text-decoration: underline; }
+  .src .dom { color: #94a3b8; font-size: 12px; }
+
+  .footnote { font-size: 12.5px; color: #94a3b8; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="#actualizacion" style="color:#b91c1c;font-weight:700">Actualización 25-oct</a>
+    <a href="#señal">Señal de alerta</a>
+    <a href="#tabla">2008 vs IA</a>
+    <a href="#voces">Quién grita 2008</a>
+    <a href="#contrapunto">Contrapunto</a>
+    <a href="#veredicto">Veredicto</a>
+    <a href="#fuentes">Fuentes</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header>
+  <span class="kicker">Análisis de crédito · Actualizado 25 de octubre de 2026</span>
+  <h1>¿Se viene un Big Short de la IA?</h1>
+  <p class="subtitle">El costo de asegurarse contra impago de la deuda de las grandes tecnológicas (CDS) está en máximos históricos. Comparación del ciclo de crédito de la IA con la burbuja hipotecaria de 2008, dato por dato.</p>
+  <p class="meta">Elaborado para Victor Vilche · versión original 22-sep-2026 · <b>actualizada 25-oct-2026</b> con lo ocurrido en las últimas cinco semanas · todas las cifras llevan su fuente</p>
+
+  <div class="verdict" style="border-left-color:#b91c1c">
+    <span class="tag">Qué cambió desde el 22 de septiembre</span>
+    El diagnóstico <b>se mantiene</b> —burbuja de crédito, no de fraude— pero la tesis se movió de "señal temprana" a <b>"el estrés ya está aquí y es selectivo"</b>. Tres cosas que el dossier original tenía como proyección hoy son hechos: <b>Oracle fue degradado a BBB-</b> (un escalón de basura), <b>Meta reportó su primer flujo de caja libre negativo desde su IPO</b>, y los CDS pasaron de "récord" a niveles de <b>distress</b> en el eslabón débil (CoreWeave sobre 1.000 pb). El punto de quiebre que anunciamos —"la demanda no crece tan rápido como el capex"— <b>sigue sin ocurrir</b>: el detonante real está siendo el <b>costo de financiamiento</b>, no la caída de la demanda.
+  </div>
+</header>
+
+<section id="actualizacion">
+  <h2>0 · Actualización al 25 de octubre de 2026</h2>
+  <p class="lede">Cinco semanas después del dossier original, el crédito dejó de avisar y empezó a cobrar. Esto es lo medido hoy, separado de lo que era proyección en septiembre.</p>
+
+  <div class="kpis">
+    <div class="kpi warn"><div class="num">315<small> pb</small></div><div class="lbl">CDS a 5 años de Oracle al 19-oct · <b>+311%</b> en un año · el dossier original lo tenía en 215 pb</div></div>
+    <div class="kpi warn"><div class="num">~1.082<small> pb</small></div><div class="lbl">CDS a 5 años de CoreWeave · sobre 1.000 pb se considera <b>zona de distress</b></div></div>
+    <div class="kpi warn"><div class="num">14,9<small> %</small></div><div class="lbl">Rendimiento del bono CoreWeave 2032 (cupón 9,625%) · tocó 15% el 14-oct</div></div>
+    <div class="kpi warn"><div class="num">−2.120<small> M US$</small></div><div class="lbl">Flujo de caja libre de Meta en el 3T-2026 · <b>primero negativo desde su salida a bolsa</b></div></div>
+  </div>
+
+  <div class="card">
+    <h3>Los tres hechos que confirman la tesis del dossier</h3>
+    <p class="dato"><b>Oracle bajó a BBB- el 9 de julio.</b> S&P le quitó un escalón y la dejó a uno solo de la categoría basura, con el corto plazo bajado de A-2 a A-3. Ya está pagando CDS de grado especulativo aunque su rating siga siendo de grado de inversión: si cae el siguiente escalón, los fondos que solo compran investment grade están obligados a vender. (Nasdaq / S&P Global Ratings, jul-2026)</p>
+    <p class="dato"><b>CoreWeave cruzó a territorio de distress.</b> Sus bonos 2031 y 2032 se hunden y rinden cerca del 15%, el CDS sobrepasó los 1.000 pb y su rating es B+ (basura). El director de precios de S&amp;P lo dijo de la forma más clara: tiene "niveles de capex casi de hyperscaler, pero no el balance de un hyperscaler". La acción cayó 15,5% en una sesión y acumula <b>−61% desde su máximo de 12 meses</b>. (CNBC 14-oct y 19-oct)</p>
+    <p class="dato"><b>Meta giró a flujo de caja libre negativo.</b> 34.910 M US$ de capex contra 32.790 M de caja operacional. Es el primer trimestre negativo desde su IPO en 2012. Es exactamente el escenario que el dossier describía como "forward negativo" y que el bando moderado usaba como argumento de que <i>no</i> pasaría. (Resultados 3T-2026)</p>
+  </div>
+
+  <div class="card">
+    <h3>Qué pasó con los precios desde que se escribió el dossier</h3>
+    <p class="lede" style="margin-bottom:10px">Cierre del 22-sep-2026 contra cierre del 23-oct-2026. Dato de mercado, no interpretación.</p>
+    <div class="table-scroll">
+      <table style="min-width:520px">
+        <thead><tr><th>Activo</th><th>22-sep</th><th>23-oct</th><th>Variación</th><th>Desde máx. 12m</th></tr></thead>
+        <tbody>
+          <tr><td>Oracle (ORCL)</td><td>$149,20</td><td>$126,16</td><td><b style="color:#b91c1c">−15,4%</b></td><td>−55,5%</td></tr>
+          <tr><td>CoreWeave (CRWV)</td><td>$86,76</td><td>$54,24</td><td><b style="color:#b91c1c">−37,5%</b></td><td>−61,2%</td></tr>
+          <tr><td>Meta (META)</td><td>$736,60</td><td>$642,62</td><td><b style="color:#b91c1c">−12,8%</b></td><td>−17,4%</td></tr>
+          <tr><td>Nvidia (NVDA)</td><td>$228,87</td><td>$210,96</td><td>−7,8%</td><td>−11,8%</td></tr>
+          <tr><td>Nasdaq Compuesto</td><td>27.244,28</td><td>25.955,34</td><td>−4,7%</td><td>−6,0%</td></tr>
+          <tr><td>S&amp;P 500</td><td>7.764,64</td><td>7.623,68</td><td>−1,8%</td><td>−2,5%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small" style="margin-top:10px">La lectura que importa: <b>el castigo es quirúrgico, no sistémico</b>. El S&amp;P 500 cae 1,8% mientras el eslabón con peor balance cae 37,5%. Si fuera 2008, el contagio ya habría arrastrado al índice completo. Eso sostiene el veredicto original.</p>
+  </div>
+
+  <div class="card pro">
+    <h3>La prueba que sostenía el bando moderado, y por qué se debilitó</h3>
+    <p class="dato">El dossier citaba que el capex estaba "cerca del 100% del flujo de caja operativo, no por encima". <b>Ya cruzó esa línea.</b> Meta está gastando por encima de lo que genera, y Bank of America proyecta que Amazon, Alphabet, Oracle y Meta tengan flujo de caja libre negativo en 2027; solo Microsoft se salvaría.</p>
+    <p class="dato">Morgan Stanley estima que la quema de caja del grupo se acerque a <b>600.000 M US$ en 2027</b>, y que a mediados de octubre ya se habían emitido ~255.000 M en bonos no garantizados, cerca del 30% del capex proyectado del año.</p>
+    <p class="dato"><b>Y apareció la evidencia del cargo de Burry.</b> Meta extendió la vida útil de sus servidores y equipos de red de 4 a 5,5 años, lo que le redujo la depreciación de 2025 en <b>2.900 M US$</b>. Según el caso de Harvard Business School sobre el tema, <i>todos</i> los grandes hyperscalers hicieron una extensión similar entre 2020 y 2025. La vida útil es una estimación, y la estimación decide cuánto del costo real aparece como gasto este año. (AInvest, 21-oct-2026)</p>
+  </div>
+
+  <div class="card">
+    <h3>Dónde el dossier original se equivocó o quedó corto</h3>
+    <p class="dato"><b>Se quedó corto con Oracle.</b> Lo trataba como <i>bellwether</i> de grado de inversión con CDS en 215 pb. Hoy: degradado a BBB-, CDS en 315 pb, acción −55% desde su máximo. El economista David Rosenberg la llama "el canario en la mina" y "el puente entre las neocloud basura y los hyperscalers de grado de inversión". Su frase, que vale como criterio de alerta: <i>"Una degradación a basura sería la señal más clara de contagio."</i></p>
+    <p class="dato"><b>Identificó bien a los eslabones débiles</b> (CoreWeave, TeraWulf) y ahí es exactamente donde se produjo el estrés. Ese acierto se mantiene.</p>
+    <p class="dato"><b>El bando optimista se partió.</b> Steve Eisman —uno de los del Big Short original— salió a rebatir a Burry: dice que su argumento sobre depreciación "es demasiado académico", porque los chips viejos no pierden valor tan rápido (CoreWeave tiene un contrato con A100 hasta 2029). Pero Eisman tiene su propia alarma, y es más concreta: <b>toda la cadena depende de OpenAI y Anthropic</b>. El 70% de las cuentas por cobrar de Nvidia viene de cinco clientes; el 70% del ingreso de IA de Microsoft, Meta, Amazon y Alphabet viene de esos dos laboratorios; y en Oracle cerca de la mitad de las obligaciones contractuales futuras están atadas a OpenAI.</p>
+  </div>
+
+  <div class="card" style="border-left:4px solid #b91c1c">
+    <h3>El veredicto actualizado, en una línea</h3>
+    <p>El diagnóstico de septiembre era correcto y el mecanismo se está ejecutando <b>más rápido de lo previsto en el eslabón débil y más lento de lo temido en el sistema</b>. No hay contagio bancario ni fraude: hay un ciclo de crédito que se encarece y que ya está separando a los que tienen balance de los que no. La señal a seguir no es el precio de Nvidia —es la degradación de Oracle a basura, que Rosenberg marcó como la línea que, si se cruza, convierte esto en otra cosa.</p>
+  </div>
+</section>
+
+<section id="señal">
+  <h2>1 · La señal de alerta: el mercado de crédito ya está hablando</h2>
+  <p class="lede">Lo que subió "por las nubes" no son "swaps de deuda" sino <strong>CDS (credit default swaps)</strong>: seguros que se compran contra el impago de un bono. Cuando su precio sube, el mercado paga más por cubrirse del riesgo de impago. Es un termómetro de miedo, no una deuda en sí.</p>
+
+  <div class="kpis">
+    <div class="kpi warn"><div class="num">215<small> bp</small></div><div class="lbl">CDS a 5 años de Oracle — récord histórico; arrancó 2026 en 144 bp</div></div>
+    <div class="kpi"><div class="num">~$194<small> mil M</small></div><div class="lbl">Bonos emitidos por los hyperscalers en 2026 hasta julio (+79% vs todo 2025)</div></div>
+    <div class="kpi warn"><div class="num">5×→<small>2×</small></div><div class="lbl">Cobertura de demanda de esas emisiones: cayó de 5 veces en febrero a menos de 2 en julio</div></div>
+    <div class="kpi"><div class="num">$3<small> billones</small></div><div class="lbl">Compromisos fuera de balance de los 5 grandes, según Michael Burry</div></div>
+  </div>
+
+  <div class="charts">
+    <div class="chart">
+      <h3>CDS a 5 años de Oracle (puntos base)</h3>
+      <svg viewBox="0 0 320 150" width="100%" role="img" aria-label="Gráfico CDS Oracle">
+        <line x1="30" y1="20" x2="30" y2="130" stroke="#e2e8f0" stroke-width="1"/>
+        <line x1="30" y1="130" x2="300" y2="130" stroke="#e2e8f0" stroke-width="1"/>
+        <line x1="30" y1="130" x2="300" y2="35" stroke="#2563eb" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="30" cy="130" r="4" fill="#2563eb"/>
+        <circle cx="300" cy="35" r="5" fill="#b91c1c"/>
+        <text x="30" y="145" font-size="11" fill="#94a3b8">ene 2026 · 144</text>
+        <text x="225" y="24" font-size="11" font-weight="700" fill="#b91c1c">sep · 215</text>
+      </svg>
+      <div class="cap">Seguros $10 M de deuda de Oracle hoy cuesta ~$215.000 al año, contra ~$144.000 a inicios de 2026.</div>
+    </div>
+    <div class="chart">
+      <h3>Cobertura de demanda de bonos hyperscaler (× suscrito)</h3>
+      <svg viewBox="0 0 320 150" width="100%" role="img" aria-label="Gráfico cobertura de demanda">
+        <line x1="30" y1="20" x2="30" y2="130" stroke="#e2e8f0" stroke-width="1"/>
+        <line x1="30" y1="130" x2="300" y2="130" stroke="#e2e8f0" stroke-width="1"/>
+        <rect x="60" y="40" width="44" height="90" fill="#2563eb" rx="6"/>
+        <rect x="150" y="52" width="44" height="78" fill="#2563eb" rx="6" opacity="0.75"/>
+        <rect x="240" y="104" width="44" height="26" fill="#b91c1c" rx="6"/>
+        <text x="72" y="32" font-size="11" font-weight="700" fill="#2563eb">5×</text>
+        <text x="162" y="44" font-size="11" fill="#64748b">3,4×</text>
+        <text x="248" y="96" font-size="11" font-weight="700" fill="#b91c1c">&lt;2×</text>
+        <text x="64" y="146" font-size="11" fill="#94a3b8">febrero</text>
+        <text x="152" y="146" font-size="11" fill="#94a3b8">marzo</text>
+        <text x="248" y="146" font-size="11" fill="#94a3b8">julio</text>
+      </svg>
+      <div class="cap">Ratio de órdenes vs monto emitido (dato Apollo vía Reuters). La demanda, aunque alta en absoluto, se está enfriando.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Lo que el crédito ya está descontando</h3>
+    <p class="dato">CDS en máximos históricos en <strong>Oracle, SpaceX, Alphabet, Amazon, Meta, Broadcom y Nvidia</strong>, según datos LSEG. <a href="https://www.ft.com/content/ac136522-ecc7-4262-8702-e0d636ea3099" target="_blank" rel="noopener">Financial Times</a></p>
+    <p class="dato">La deuda de Meta para su data center de Texas ($12 mil M) subió de costo a niveles cercanos a bono "junk". <a href="https://www.ft.com/content/ac136522-ecc7-4262-8702-e0d636ea3099" target="_blank" rel="noopener">FT</a></p>
+    <p class="dato">78 de 91 bonos hyperscaler emitidos en 2026 cotizan a mayor rendimiento que al emitirse; la mediana subió ~22 bp. <a href="https://wtvbam.com/2026/07/29/hyperscaler-debt-binge-pushes-yields-up-as-investor-demand-cools" target="_blank" rel="noopener">Reuters vía WTVB</a></p>
+    <p class="dato">~79% de los bonos del sector desde inicios de 2025 cotizan más anchos que el día uno; caen 3,3 puntos y -1,4% en retorno total. <a href="https://asreport.americanbanker.com/articles/hyperscalers-drag-down-bond-gauges-across-global-markets" target="_blank" rel="noopener">Bloomberg vía American Banker</a></p>
+    <p class="dato">JP Morgan lanzó una <strong>canasta de CDS</strong> específica para apostar o cubrirse contra el riesgo de deuda de Amazon, Meta, Microsoft, Oracle y Alphabet. <a href="https://www.linkedin.com/posts/andrea-ward-1a212b3_jp-morgan-launches-new-credit-default-swap-activity-7442246784757911552-tspU" target="_blank" rel="noopener">LinkedIn</a></p>
+  </div>
+
+  <div class="card">
+    <h3>La montaña de deuda detrás</h3>
+    <p class="dato">Emisión de los hyperscalers: ~$194 mil M en 2026 hasta el 7 de julio (+79% vs $108 mil M en todo 2025). Goldman proyecta ~$250 mil M este año y ~$400 mil M en 2027. <a href="https://wtvbam.com/2026/07/29/hyperscaler-debt-binge-pushes-yields-up-as-investor-demand-cools" target="_blank" rel="noopener">Reuters vía WTVB</a></p>
+    <p class="dato">Morgan Stanley estima ~$570 mil M de emisión global ligada a IA en 2026; ~$236 mil M ya emitidos al 31 de mayo, 4× el ritmo del año previo. <a href="https://ca.finance.yahoo.com/news/bond-investors-push-back-ai-130539591.html" target="_blank" rel="noopener">Yahoo Finance</a></p>
+    <p class="dato">Alphabet, Meta, Amazon y Oracle emitieron más de $300 mil M desde inicios de 2025. <a href="https://asreport.americanbanker.com/articles/hyperscalers-drag-down-bond-gauges-across-global-markets" target="_blank" rel="noopener">Bloomberg</a></p>
+    <p class="dato">Capex de los 4 grandes (Amazon, Alphabet, Meta, Microsoft): guía de $610–725 mil M para 2026. Goldman lo eleva a ~$750 mil M. <a href="https://flakjacketfinance.com/gurus/porter-stansberry-credit-cycle-bubble-thesis" target="_blank" rel="noopener">Porter Stansberry</a></p>
+    <p class="dato">Bonos "high yield" ya entraron al juego: TeraWulf $3,2 mil M (BB-), CoreWeave $2 mil M, y un préstamo de CoreWeave de $8,5 mil M respaldado solo por GPUs (primer investment-grade sobre chips). <a href="https://www.reuters.com/business/finance/five-debt-hotspots-ai-data-centre-boom-2025-11-05/" target="_blank" rel="noopener">Reuters</a></p>
+  </div>
+</section>
+
+<section id="tabla">
+  <h2>2 · 2008 vs. IA: qué se parece y qué no</h2>
+  <p class="lede">Las burbujas de crédito se parecen en el mecanismo (dinero barato financiando activos cuyo valor depende de una demanda futura por confirmar) y se diferencian en quién debe, qué compró y por dónde se propaga la pérdida.</p>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th class="dim">Dimensión</th><th>Hipotecaria 2008</th><th>IA 2025–2026</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th class="dim">Activo subyacente</th>
+          <td class="c08"><span class="era">2008</span>Hipotecas subprime: el ingreso del prestatario estaba sobreestimado.</td>
+          <td class="ia"><span class="era">IA</span>GPUs y data centers: la demanda de cómputo que justifica el precio está por demostrar.</td>
+        </tr>
+        <tr>
+          <th class="dim">Quién debe</th>
+          <td class="c08"><span class="era">2008</span>Hogares de bajos ingresos sin capacidad real de pago.</td>
+          <td class="ia"><span class="era">IA</span>Empresas con balance fuerte: su capex está cerca del 100% de su flujo de caja operativo, no por encima de sus ingresos.</td>
+        </tr>
+        <tr>
+          <th class="dim">Calidad del activo</th>
+          <td class="c08"><span class="era">2008</span>Basura recalificada AAA (fraude en la calificación).</td>
+          <td class="ia"><span class="era">IA</span>Capacidad real con arrendamientos firmados; el debate es el precio pagado, no la existencia del activo.</td>
+        </tr>
+        <tr>
+          <th class="dim">Vehículo de contagio</th>
+          <td class="c08"><span class="era">2008</span>CDO sintéticos opacos apalancados por todo el sistema bancario.</td>
+          <td class="ia"><span class="era">IA</span>Bonos públicos + crédito privado + ABS; más transparentes y más contenidos. Mucho sale del balance vía JVs y arriendos (shadow borrowing, BIS).</td>
+        </tr>
+        <tr>
+          <th class="dim">Mecanismo de pérdida</th>
+          <td class="c08"><span class="era">2008</span>Impagos en cadena que hunden bancos (Lehman) y congelan el crédito global.</td>
+          <td class="ia"><span class="era">IA</span>Depreciación de activos + spreads que se abren. Doloroso para tenedores, pero sin hundir a un banco sistémico.</td>
+        </tr>
+        <tr>
+          <th class="dim">Señal temprana</th>
+          <td class="c08"><span class="era">2008</span>Índice ABX (CDS subprime) colapsando en 2006–07.</td>
+          <td class="ia"><span class="era">IA</span>CDS de hyperscalers en récord y cobertura de demanda cayendo de 5× a &lt;2× (hoy).</td>
+        </tr>
+        <tr>
+          <th class="dim">Concentración de riesgo</th>
+          <td class="c08"><span class="era">2008</span>Correlación total: todo el mercado inmobiliario cayó a la vez.</td>
+          <td class="ia"><span class="era">IA</span>5 hyperscalers concentran la demanda de chips (el top 5 de clientes de Nvidia = 70% de sus cuentas por cobrar).</td>
+        </tr>
+        <tr>
+          <th class="dim">Fraude sistémico</th>
+          <td class="c08"><span class="era">2008</span>Sí: documentación falsa ("liar loans") y calificaciones vendidas.</td>
+          <td class="ia"><span class="era">IA</span>No detectado. El problema es de sobreinversión y precio, no de fraude contable.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="voces">
+  <h2>3 · Quién grita "esto es 2008"</h2>
+  <p class="lede">Las voces más creíbles del bando pesimista — incluidos los que ganaron el Big Short original — apuntan a tres cosas: apalancamiento creciente, flujo de caja libre negativo y payback incierto sobre activos que se deprecian.</p>
+
+  <div class="card">
+    <div class="voice">
+      <div class="avatar">MB</div>
+      <div>
+        <span class="who">Michael Burry</span>
+        <span class="role">El inversor del Big Short original · vía Nikkei / SSBCrack</span>
+        <p class="dato">~$3 billones en compromisos fuera de balance entre los 5 grandes: ~$1,2 billones en arriendos aún no iniciados, ~$1,5 billones en compromisos de compra y $400 mil M en obras en curso que aún no se deprecian (GAAP). <a href="https://news.ssbcrack.com/michael-burry-warns-of-3-trillion-risk-in-big-techs-ai-commitments" target="_blank" rel="noopener">SSBCrack</a></p>
+        <p class="dato">Deuda fuera de balance de $1,65 billones en las 5 grandes, que ya supera su pasivo reportado; Meta lidera con $420 mil M y Oracle multiplicó por 30 su deuda fuera de balance a $273 mil M. <a href="https://edgen.tech/tr/news/stock/big-techs-165-trillion-hidden-debt-draws-michael-burry-warning" target="_blank" rel="noopener">Nikkei vía Edgen</a></p>
+        <p class="dato">"Cuando la música pare, estos compromisos fuera de balance se vuelven pasivos reales muy rápido."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="voice">
+      <div class="avatar">TS</div>
+      <div>
+        <span class="who">Torsten Slok</span>
+        <span class="role">Economista jefe, Apollo Global Management · vía CNBC</span>
+        <p class="dato">Compara el estrés de deuda de los hyperscalers con la vivienda de 2008: "lo que el mercado está repreciando es el crédito de los hyperscalers: un ciclo de capex de IA financiado con deuda, apalancamiento creciente, flujo de caja libre negativo y payback incierto sobre activos que se deprecian." <a href="https://wordupnews.com/cryptocurrency/the-next-short-economist-compares-hyperscaler-ai-debt-stress-to-2008-housing-collapse" target="_blank" rel="noopener">WordupNews</a></p>
+        <p class="dato">Alphabet y Meta tienen flujo de caja libre forward negativo de ~$25 mil M cada uno, Amazon ~$30 mil M; Microsoft sigue positivo (FactSet).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="voice">
+      <div class="avatar">BS</div>
+      <div>
+        <span class="who">Steve Eisman, Vincent Daniel, Porter Collins</span>
+        <span class="role">Veteranos del Big Short · vía Benzinga</span>
+        <p class="dato">Riesgo de concentración: el top 5 de clientes de Nvidia representa el 70% de sus cuentas por cobrar (Nota 7 del 10-Q). El ingreso de la cadena depende de una fracción de compradores. <a href="https://newsbreak.com/benzinga-520061/4887253538499-big-short-veterans-say-ai-boom-could-end-in-a-boom-bust-cycle-warn-nvidia-faces-a-hidden-risk-it-scares-me" target="_blank" rel="noopener">Benzinga</a></p>
+        <p class="dato">Collins sobre el cambio en los balances de las tecnológicas: "Sí, me asusta."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="voice">
+      <div class="avatar">PS</div>
+      <div>
+        <span class="who">Porter Stansberry</span>
+        <span class="role">Porter & Co. · "La mayor burbuja financiera de la historia"</span>
+        <p class="dato">CAPE (Shiller P/E) en 40, el máximo sostenido de la historia; la media es 17 y los picos previos fueron 21 (1929), 21 (1972) y 35 (2000). Revertir a la media implica caída de ~58%. <a href="https://flakjacketfinance.com/gurus/porter-stansberry-credit-cycle-bubble-thesis" target="_blank" rel="noopener">FlakJacket Finance</a></p>
+        <p class="dato">Deuda de margen en FINRA: $1,22 billones en marzo 2026, +38,7% interanual.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contrapunto">
+  <h2>4 · El contrapunto: por qué NO es 2008</h2>
+  <p class="lede">El bando moderado no niega la sobreinversión; niega el contagio sistémico. Tres argumentos sólidos:</p>
+
+  <div class="card pro">
+    <h3>Los deudores no están quebrados</h3>
+    <p class="dato">El capex de los hyperscalers está cerca del 100% de su flujo de caja operativo, no por encima de sus ingresos. No se endeudan porque no pueden pagar, sino para no sacrificar recompra de acciones, adquisiciones ni liquidez. "Eso es asignación de capital, no distress." <a href="https://ca.finance.yahoo.com/news/bond-investors-push-back-ai-130539591.html" target="_blank" rel="noopener">Yahoo Finance</a></p>
+    <p class="dato">El famoso "$1,5 billones" no es deuda que deban asumir: es una brecha de financiamiento (diferencia entre ~$2,9 billones de inversión en data centers a 2028 y ~$1,4 billones cubiertos por caja), que puede llenarse con bonos, crédito privado, ABS, hipotecas o equity. <a href="https://ca.finance.yahoo.com/news/bond-investors-push-back-ai-130539591.html" target="_blank" rel="noopener">Morgan Stanley vía Yahoo</a></p>
+  </div>
+
+  <div class="card pro">
+    <h3>El contagio es más contenido</h3>
+    <p class="dato">JP Morgan nota que los spreads de bonos públicos siguen cerca de mínimos del ciclo; los bonos públicos son más transparentes y fáciles de monitorear que los CDO de 2008. <a href="https://ca.finance.yahoo.com/news/bond-investors-push-back-ai-130539591.html" target="_blank" rel="noopener">Yahoo Finance</a></p>
+    <p class="dato">El riesgo sí se está moviendo fuera del balance (vía JVs tipo Meta–Blue Owl Hyperion, $27 mil M con Blue Owl al 80% y Meta al 20%), pero a vehículos con más transparencia que el shadow banking sintético de 2008. <a href="https://ca.finance.yahoo.com/news/bond-investors-push-back-ai-130539591.html" target="_blank" rel="noopener">Yahoo Finance</a></p>
+  </div>
+
+  <div class="card pro">
+    <h3>No hay fraude sistémico</h3>
+    <p class="dato">El activo subyacente (capacidad de cómputo con contratos de arrendamiento firmados, a veces garantizados por el hyperscaler) es real; el debate es el precio, no la existencia. El rating de un bono de data center es, en sustancia, el rating del arrendamiento. <a href="https://www.cliffordchance.com/content/dam/cliffordchance/briefings/2026/07/The%20Data%20Center%20Lease%20Is%20the%20Bond.pdf" target="_blank" rel="noopener">Clifford Chance (PDF)</a></p>
+    <p class="dato">Burry no acusa fraude: acusa frenesí de infraestructura. Distinto a las "liar loans" y calificaciones vendidas de 2006–07.</p>
+  </div>
+</section>
+
+<section id="veredicto">
+  <h2>5 · Veredicto</h2>
+  <div class="card">
+    <p>Hay una burbuja de <strong>crédito</strong> en formación y señales tempranas de estrés que ya se ven en el precio de los CDS y en el enfriamiento de la demanda por bonos. Eso no es opinión: es un dato de mercado.</p>
+    <p>Pero el contagio probable es de <strong>ciclo de inversión</strong> (como el dot-com), no de <strong>ciclo financiero sistémico</strong> (como 2008). La diferencia está en tres pilares: los deudores tienen balance, el vehículo de propagación es más transparente, y no hay fraude de calificación.</p>
+    <p><strong>El punto de quiebre no es "Nvidia colapsa", sino "la demanda de IA no crece tan rápido como el capex ya contratado".</strong> Si eso pasa, los primeros en sufrir no serán los gigantes con balance, sino el crédito privado y los operadores de data centers de menor calidad (TeraWulf, CoreWeave y similares), que son los que financiaron GPUs a corto plazo contra contratos por demostrar.</p>
+    <p class="dato" style="margin-top:12px;">Para entender el marco: términos como "data center developer", "construction debt" y "private credit" son los que se escucharán si la burbuja revienta. <a href="https://www.marketplace.org/story/2025/12/09/what-will-we-all-be-talking-about-if-the-ai-bubble-bursts" target="_blank" rel="noopener">Marketplace</a></p>
+  </div>
+</section>
+
+<section id="fuentes">
+  <h2>Fuentes</h2>
+  <div class="card">
+    <div class="src"><span class="n">1</span><span><a href="https://www.ft.com/content/ac136522-ecc7-4262-8702-e0d636ea3099" target="_blank" rel="noopener">Big Tech credit risks rise sharply as AI spending soars</a> <span class="dom">ft.com</span></span></div>
+    <div class="src"><span class="n">2</span><span><a href="https://www.reuters.com/business/finance/five-debt-hotspots-ai-data-centre-boom-2025-11-05/" target="_blank" rel="noopener">Five debt hotspots in the AI data centre boom</a> <span class="dom">reuters.com</span></span></div>
+    <div class="src"><span class="n">3</span><span><a href="https://wtvbam.com/2026/07/29/hyperscaler-debt-binge-pushes-yields-up-as-investor-demand-cools" target="_blank" rel="noopener">Hyperscaler debt binge pushes yields up as investor demand cools</a> <span class="dom">Reuters vía WTVB</span></span></div>
+    <div class="src"><span class="n">4</span><span><a href="https://asreport.americanbanker.com/articles/hyperscalers-drag-down-bond-gauges-across-global-markets" target="_blank" rel="noopener">Hyperscalers drag down bond gauges across global markets</a> <span class="dom">Bloomberg vía American Banker</span></span></div>
+    <div class="src"><span class="n">5</span><span><a href="https://ca.finance.yahoo.com/news/bond-investors-push-back-ai-130539591.html" target="_blank" rel="noopener">Bond investors push back as AI debt heads toward $570 billion</a> <span class="dom">Yahoo Finance</span></span></div>
+    <div class="src"><span class="n">6</span><span><a href="https://news.ssbcrack.com/michael-burry-warns-of-3-trillion-risk-in-big-techs-ai-commitments" target="_blank" rel="noopener">Michael Burry warns of $3 trillion risk in Big Tech's AI commitments</a> <span class="dom">SSBCrack</span></span></div>
+    <div class="src"><span class="n">7</span><span><a href="https://edgen.tech/tr/news/stock/big-techs-165-trillion-hidden-debt-draws-michael-burry-warning" target="_blank" rel="noopener">Big tech's $1.65 trillion hidden debt draws Michael Burry warning</a> <span class="dom">Nikkei vía Edgen</span></span></div>
+    <div class="src"><span class="n">8</span><span><a href="https://wordupnews.com/cryptocurrency/the-next-short-economist-compares-hyperscaler-ai-debt-stress-to-2008-housing-collapse" target="_blank" rel="noopener">Economist compares hyperscaler AI debt stress to 2008 housing collapse</a> <span class="dom">CNBC vía WordupNews</span></span></div>
+    <div class="src"><span class="n">9</span><span><a href="https://newsbreak.com/benzinga-520061/4887253538499-big-short-veterans-say-ai-boom-could-end-in-a-boom-bust-cycle-warn-nvidia-faces-a-hidden-risk-it-scares-me" target="_blank" rel="noopener">Big Short veterans say AI boom could end in a boom-bust cycle</a> <span class="dom">Benzinga</span></span></div>
+    <div class="src"><span class="n">10</span><span><a href="https://flakjacketfinance.com/gurus/porter-stansberry-credit-cycle-bubble-thesis" target="_blank" rel="noopener">Porter Stansberry: greatest financial bubble forming a top</a> <span class="dom">FlakJacket Finance</span></span></div>
+    <div class="src"><span class="n">11</span><span><a href="https://ca.finance.yahoo.com/news/bond-investors-push-back-ai-130539591.html" target="_blank" rel="noopener">J.P. Morgan launches CDS basket for AI debt risk</a> <span class="dom">LinkedIn</span></span></div>
+    <div class="src"><span class="n">12</span><span><a href="https://www.cliffordchance.com/content/dam/cliffordchance/briefings/2026/07/The%20Data%20Center%20Lease%20Is%20the%20Bond.pdf" target="_blank" rel="noopener">The Data Center Lease is the Bond</a> <span class="dom">Clifford Chance (PDF)</span></span></div>
+    <div class="src"><span class="n">13</span><span><a href="https://www.marketplace.org/story/2025/12/09/what-will-we-all-be-talking-about-if-the-ai-bubble-bursts" target="_blank" rel="noopener">If the AI bubble burst, these terms will be oft heard</a> <span class="dom">Marketplace</span></span></div>
+  </div>
+  <p class="footnote">Dossier generado el 22 de septiembre de 2026 a partir de búsqueda web en vivo. <b>Actualizado el 25 de octubre de 2026:</b> se agregó la sección 0 con los hechos ocurridos entre ambas fechas, y la sección 1 conserva las cifras originales de septiembre como registro de lo que se creía entonces. Las variaciones de precio de la sección 0 se calcularon con series diarias de cierre (22-sep y 23-oct-2026). Cifras en dólares estadounidenses. Los CDS y spreads cambian diario; los valores corresponden a la fecha de cada fuente citada. Este documento es análisis, no asesoría de inversión.</p>
+</section>
+
+</div>
+</body>
+</html>
